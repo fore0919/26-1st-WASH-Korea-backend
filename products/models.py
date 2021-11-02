@@ -27,7 +27,7 @@ class Product(models.Model):
     class Meta:
         db_table = 'products'
 
-class Tag(models.model):
+class Tag(models.Model):
     name         = models.CharField(max_length=40)
     
     class Meta:
@@ -40,7 +40,7 @@ class ProductTag(models.Model):
     class Meta:
         db_table = 'product_tags'
 
-class Image(models.model):
+class Image(models.Model):
     url         = models.CharField(max_length=200)
     product      = models.ForeignKey('Product', on_delete=models.CASCADE)
 
