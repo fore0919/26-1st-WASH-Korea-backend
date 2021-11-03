@@ -3,14 +3,18 @@ from django.db import models
 # Create your models here.
 
 class Category(models.Model):
-    name = models.CharField(max_length=40)
+    name        = models.CharField(max_length=40)
+    image       = models.CharField(max_length=2000)
+    description = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'categories'
 
 class SubCategory(models.Model):
-    name     = models.CharField(max_length=40)
-    category = models.ForeignKey('Category',on_delete=models.PROTECT)
+    name        = models.CharField(max_length=40)
+    image       = models.CharField(max_length=2000)
+    description = models.CharField(max_length=100)
+    category    = models.ForeignKey('Category',on_delete=models.PROTECT)
 
     class Meta:
         db_table = 'sub_categories'
