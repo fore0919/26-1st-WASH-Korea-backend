@@ -1,7 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
 class Category(models.Model):
     name        = models.CharField(max_length=40)
     image       = models.CharField(max_length=2000)
@@ -44,7 +42,7 @@ class ProductTag(models.Model):
     class Meta:
         db_table = 'products_tags'
 
-class ProducdtImage(models.Model):
+class ProductImage(models.Model):
     url     = models.CharField(max_length=2000)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
 
