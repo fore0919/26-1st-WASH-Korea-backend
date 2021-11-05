@@ -6,7 +6,6 @@ from django.db.models import Q
 
 from products.models import Product
 
-
 class ProductListView(View):
     def get(self, request, sub_category = None):
         q = Q()
