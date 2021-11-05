@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pymysql
 
-from my_settings import DATABASES, SECRET_KEY
+from my_settings import DATABASES, SECRET_KEY, ALGORITHM
 
 pymysql.install_as_MySQLdb()
 
@@ -142,3 +142,5 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+ALGORITHM = ALGORITHM
