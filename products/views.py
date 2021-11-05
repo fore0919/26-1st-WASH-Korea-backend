@@ -1,18 +1,18 @@
 import json
 
-from django.http import JsonResponse
-from django.views import View
+from django.http      import JsonResponse
+from django.views     import View
 from django.db.models import Q
 
 from products.models import Product
 
 
 class ProductListView(View):
-    def get(self, request, sub_category=None):
+    def get(self, request, sub_category = None):
         q = Q()
 
         if sub_category:
-            q &= Q(sub_category__id=sub_category)
+            q &= Q(sub_category_id = sub_category)
 
         results = [{
                     "name"                     : product.name,
@@ -29,4 +29,5 @@ class ProductListView(View):
                     'tags'                     : [tag.name for tag in product.tags.all()],
                     "product_image"            : [image.url for image in product.productimage_set.all()]
             } for product in Product.objects.filter(q)]
+
         return JsonResponse({'results' : results}, status = 200)
