@@ -63,3 +63,6 @@ class LoginView(View):
 
         except User.DoesNotExist:
             return JsonResponse({'message':'USER_DOES_NOT_EXISTS'}, status=401)
+
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({'message': 'JSON_DECODE_ERROR'}, status=400)
