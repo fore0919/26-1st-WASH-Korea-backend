@@ -8,10 +8,10 @@ from products.models import Product
 
 class ProductListView(View):
     def get(self, request):
-        category     = request.GET.get('category', None)
-        sub_category = request.GET.get('sub_category', None)
-        price        = request.GET.get('price', None)
-        tags         = request.GET.getlist('tags', None)
+        category     = request.GET.get('category')
+        sub_category = request.GET.get('sub_category')
+        price        = request.GET.get('price')
+        print(request.GET)
 
         q = Q()
 
