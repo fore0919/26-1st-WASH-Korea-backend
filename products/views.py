@@ -64,26 +64,12 @@ class NavListView(View):
 
 class SearchView(View):
     def get(self, request):
-        category     = request.GET.get('category')
-        sub_category = request.GET.get('sub_category')
-        product      = request.GET.get('product')
-        tags         = request.GET.get('tags')
+        search_word = request.GET.get('search_word')
 
         q = Q()
 
-        if category:
-            q &= Q(sub_category__category__name = category)
-
-        if sub_category:
-            q &= Q(sub_category__name = sub_category)
-
-        if product:
-            q &= Q(name = product)
-
-        if tags:
-            q &= Q(tags__name = tags)
-
-        product_list = Product.objects.filter(q)
+        if search_word:
+            q = Product.objects.filter(Q(sub_category__category__name__startswith = search_word)|Q(sub_category__name__startswith = search_word)|Q(name__startswith = search_word)|Q(tags__name__startswith = search_word))
 
         results = [{
                     "name"          : product.name,
@@ -91,6 +77,6 @@ class SearchView(View):
                     "sub_name"      : product.sub_name,
                     'tags'          : [tag.name for tag in product.tags.all()],
                     "product_image" : [image.url for image in product.productimage_set.all()]
-            } for product in product_list]
+            } for product in q]
 
         return JsonResponse({'results' : results}, status = 200)
