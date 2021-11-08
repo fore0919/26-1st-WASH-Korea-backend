@@ -26,6 +26,8 @@ class SignupView(View):
                 return JsonResponse({'message':'PW_VALIDATION_ERROR'}, status=400)
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'message':'ALREADY_EXISTS_EMAIL'}, status=409)
+            if User.objects.filter(user_name=user_name).exists():
+                return JsonResponse({'message':'ALREADY_EXISTS_USERNAME'}, status=409)
 
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
