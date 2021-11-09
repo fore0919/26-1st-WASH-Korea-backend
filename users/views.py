@@ -1,12 +1,12 @@
 import json, bcrypt, jwt 
 
-from django.http    import JsonResponse
-from django.views   import View
+from django.http  import JsonResponse
+from django.views import View
 
-from django.conf    import settings
+from django.conf import settings
 
-from .models        import User
-from .utils         import validate_email, validate_password
+from .models import User
+from .utils  import validate_email, validate_password
 
 class SignupView(View):
     def post(self, request):
@@ -22,10 +22,13 @@ class SignupView(View):
 
             if not validate_email(email) :
                 return JsonResponse({'message':'EMAIL_VALIDATION_ERROR'}, status=400)
+
             if not validate_password(password):
                 return JsonResponse({'message':'PW_VALIDATION_ERROR'}, status=400)
+
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'message':'ALREADY_EXISTS_EMAIL'}, status=409)
+
             if User.objects.filter(user_name=user_name).exists():
                 return JsonResponse({'message':'ALREADY_EXISTS_USERNAME'}, status=409)
 
