@@ -4,7 +4,7 @@ from django.http      import JsonResponse
 from django.views     import View
 from django.db.models import Q
 
-from products.models import Product, Category, SubCategory
+from products.models import Product, SubCategory, Category
 
 class ProductListView(View):
     def get(self, request):
@@ -17,9 +17,11 @@ class ProductListView(View):
 
             if category:
                 q &= Q(sub_category__category_id= category)
+                products_header = Category.objects.get(id=category)
 
             if sub_category:
                 q &= Q(sub_category_id = sub_category)
+                products_header = SubCategory.objects.get(id=sub_category)
 
             sort = {
                 "price"  : "price",
@@ -27,14 +29,21 @@ class ProductListView(View):
                 "id"     : "id"
             }
 
-            results = [{
-                        "id"            : product.id,
-                        "name"          : product.name,
-                        "price"         : int(product.price),
-                        "sub_name"      : product.sub_name,
-                        'tags'          : [tag.name for tag in product.tags.all()],
-                        "product_image" : [image.url for image in product.images.all()]
-                } for product in Product.objects.filter(q).order_by(sort[sorting])]
+            results = {
+                "data" : [{
+                    "id"            : product.id,
+                    "name"          : product.name,
+                    "price"         : int(product.price),
+                    "sub_name"      : product.sub_name,
+                    'tags'          : [tag.name for tag in product.tags.all()],
+                    "product_image" : [image.url for image in product.images.all()]    
+                } for product in Product.objects.filter(q).order_by(sort[sorting])],
+                "products_header" : {
+                    "name"        : products_header.name,
+                    "image"       : products_header.image,
+                    "description" : products_header.description
+                }
+            }
 
             return JsonResponse({'results' : results}, status = 200)
         
@@ -43,53 +52,38 @@ class ProductListView(View):
 
 class CategoryListView(View):
     def get(self, request):
-        try:
-            category = request.GET['category']
+        result = [{
+            "category_id"    : category.id,
+            "category_name"  : category.name,
+            "sub_categories" : [{
+                "sub_category_id"   : sub_category.id,
+                "sub_category_name" : sub_category.name
+            }for sub_category in category.subcategory_set.all()]
+        }for category in Category.objects.all()]
 
-            if not Category.objects.filter(id=category).exists():
+        return JsonResponse({'results' : result}, status = 200)
+
+class Productcategory(View):
+    def get(self, request, category_id):
+        try:
+            if not Category.objects.filter(id=category_id).exists():
                 return JsonResponse({'message' : 'DOES NOT EXISTS'}, status=404)
 
-            q = Q()
+            category = Category.objects.get(id=category_id)
 
-            if category:
-                q &= Q(id = category)
+            result = {
+                "category_id"   : category.id,
+                "category"      : category.name,
+                "count"         : Product.objects.filter(sub_category_id__category_id=category).count(),
+                "subcategories" : [{
+                    "sub_category_id" : sub_category.id,
+                    "name" : sub_category.name,
+                    "count" : sub_category.product_set.count()
 
-            category = Category.objects.get(q)
-
-            results = {
-                        "category"             : category.name,
-                        "category_image"       : category.image,
-                        "category_description" : category.description,
-                        "account"              : Product.objects.filter(sub_category_id__category_id=category).count()
-                }
-            return JsonResponse({'results' : results}, status = 200)
+                }for sub_category in category.subcategory_set.all()]
+            }
+            return JsonResponse({'results' : result}, status = 200)
         
-        except KeyError:
-            return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
-
-class SubcategoryListView(View):
-    def get(self, request):
-        try:
-            sub_category = request.GET['sub_category']
-
-            if not SubCategory.objects.filter(id=sub_category).exists():
-                return JsonResponse({'message' : 'DOES NOT EXISTS'}, status=404)
-
-            q = Q()
-
-            if sub_category:
-                q &= Q(id = sub_category)
-
-            sub_category = SubCategory.objects.get(q)
-
-            results = {
-                        "sub_category"             : sub_category.name,
-                        "sub_category_image"       : sub_category.image,
-                        "sub_category_description" : sub_category.description,
-                        "account"                  : Product.objects.filter(sub_category_id = sub_category).count()
-                }
-            return JsonResponse({'results' : results}, status = 200)
-
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
 
@@ -106,13 +100,13 @@ class SearchView(View):
                 Q(tags__name__startswith = search_word)
 
         results = [{
-                    "id"            : product.id,
-                    "name"          : product.name,
-                    "price"         : int(product.price),
-                    "sub_name"      : product.sub_name,
-                    'tags'          : [tag.name for tag in product.tags.all()],
-                    "product_image" : [image.url for image in product.images.all()]
-            } for product in Product.objects.filter(q).distinct()]
+            "id"            : product.id,
+            "name"          : product.name,
+            "price"         : int(product.price),
+            "sub_name"      : product.sub_name,
+            'tags'          : [tag.name for tag in product.tags.all()],
+            "product_image" : [image.url for image in product.images.all()]
+        } for product in Product.objects.filter(q).distinct()]
 
         return JsonResponse({'results' : results}, status = 200)
 
