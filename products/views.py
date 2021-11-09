@@ -95,27 +95,23 @@ class SubcategoryListView(View):
 
 class SearchView(View):
     def get(self, request):
-        try:
-            search_word = request.GET.get('search_word')
+        search_word = request.GET.get('search_word')
 
-            if search_word:
-                q = Product.objects.filter(
-                    Q(sub_category__category__name__startswith = search_word)|
-                    Q(sub_category__name__startswith = search_word)|
-                    Q(name__startswith = search_word)|
-                    Q(tags__name__startswith = search_word)
-                )
+        q = Q()
+        
+        if search_word:
+            q = Q(sub_category__category__name__startswith = search_word)|\
+                Q(sub_category__name__startswith = search_word)|\
+                Q(name__startswith = search_word)|\
+                Q(tags__name__startswith = search_word)
 
-            results = [{
-                        "id"            : product.id,
-                        "name"          : product.name,
-                        "price"         : int(product.price),
-                        "sub_name"      : product.sub_name,
-                        'tags'          : [tag.name for tag in product.tags.all()],
-                        "product_image" : [image.url for image in product.productimage_set.all()]
-                } for product in q]
+        results = [{
+                    "id"            : product.id,
+                    "name"          : product.name,
+                    "price"         : int(product.price),
+                    "sub_name"      : product.sub_name,
+                    'tags'          : [tag.name for tag in product.tags.all()],
+                    "product_image" : [image.url for image in product.productimage_set.all()]
+            } for product in Product.objects.filter(q)]
 
-            return JsonResponse({'results' : results}, status = 200)
-
-        except KeyError:
-            return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
+        return JsonResponse({'results' : results}, status = 200)
