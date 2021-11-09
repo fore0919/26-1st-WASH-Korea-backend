@@ -11,7 +11,6 @@ class ProductListView(View):
         try:
             category     = request.GET['category']
             sub_category = request.GET.get('sub_category')
-            price        = request.GET.get('price')
             sorting      = request.GET.get('sort', 'id')
 
             q = Q()
