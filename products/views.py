@@ -63,7 +63,7 @@ class CategoryListView(View):
 
         return JsonResponse({'results' : result}, status = 200)
 
-class Productcategory(View):
+class CategoryView(View):
     def get(self, request, category_id):
         try:
             if not Category.objects.filter(id=category_id).exists():
@@ -114,9 +114,11 @@ class SearchView(View):
                 'tags'          : [tag.name for tag in product.tags.all()],
                 "product_image" : [image.url for image in product.images.all()]
             } for product in Product.objects.filter(q).distinct().order_by(sort[sorting])],
-            "search_hedaline"    : f"[{search_word}] 검색결과 {Product.objects.filter(q).distinct().order_by(sort[sorting]).count()}개" 
+            "search_hedaline"   : {
+                "word"  : search_word,
+                "count" : Product.objects.filter(q).distinct().order_by(sort[sorting]).count()
+            }
         }
-
         return JsonResponse({'results' : results}, status = 200)
 
 class ProductDetailView(View):
