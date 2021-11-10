@@ -79,7 +79,6 @@ class Productcategory(View):
                     "sub_category_id" : sub_category.id,
                     "name" : sub_category.name,
                     "count" : sub_category.product_set.count()
-
                 }for sub_category in category.subcategory_set.all()]
             }
             return JsonResponse({'results' : result}, status = 200)
@@ -90,23 +89,33 @@ class Productcategory(View):
 class SearchView(View):
     def get(self, request):
         search_word = request.GET.get('search_word')
+        sorting     = request.GET.get('sort', 'id')
 
         q = Q()
         
         if search_word:
-            q = Q(sub_category__category__name__startswith = search_word)|\
-                Q(sub_category__name__startswith = search_word)|\
-                Q(name__startswith = search_word)|\
-                Q(tags__name__startswith = search_word)
+            q = Q(sub_category__category__name__contains = search_word)|\
+                Q(sub_category__name__contains = search_word)|\
+                Q(name__contains = search_word)|\
+                Q(tags__name__contains = search_word)
 
-        results = [{
-            "id"            : product.id,
-            "name"          : product.name,
-            "price"         : int(product.price),
-            "sub_name"      : product.sub_name,
-            'tags'          : [tag.name for tag in product.tags.all()],
-            "product_image" : [image.url for image in product.images.all()]
-        } for product in Product.objects.filter(q).distinct()]
+        sort = {
+                "price"  : "price",
+                "-price" : "-price",
+                "id"     : "id"
+            }
+
+        results = {
+            "data" : [{
+                "id"            : product.id,
+                "name"          : product.name,
+                "price"         : int(product.price),
+                "sub_name"      : product.sub_name,
+                'tags'          : [tag.name for tag in product.tags.all()],
+                "product_image" : [image.url for image in product.images.all()]
+            } for product in Product.objects.filter(q).distinct().order_by(sort[sorting])],
+            "search_hedaline"    : f"[{search_word}] 검색결과 {Product.objects.filter(q).distinct().order_by(sort[sorting]).count()}개" 
+        }
 
         return JsonResponse({'results' : results}, status = 200)
 
