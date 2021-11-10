@@ -72,17 +72,23 @@ class ReviewUpdateView(View):
     def post(self, request, review_id):
         try:
             data = json.loads(request.body)
-            
+
             if not Review.objects.filter(id=review_id).exists():
                 return JsonResponse({'message' : 'DOES_NOT_EXISTS'}, status=404)
 
-            user = request.user
-            review = Review.objects.get(id=review_id, user_id=user)
-            review.image      = data.get('image', review.image)
-            review.rating     = data.get('rating', review.rating)
-            review.content    = data.get('content', review.content)
-            review.updated_at = data.get('updated_at',review.updated_at)
-            review.save()
+            user    = request.user
+            review  = Review.objects.filter(id=review_id, user_id=user)
+
+            review.update(
+                content = data['content'],
+                image   = data['image'],
+                rating  = data['rating'],
+            )          
+            # review.image      = data.get('image', review.image)
+            # review.rating     = data.get('rating', review.rating)
+            # review.content    = data.get('content', review.content)
+            # updated_at = Review.updated_at,
+            # review.save()
  
             return JsonResponse({'message' : 'SUCCESS'}, status=201)
 
