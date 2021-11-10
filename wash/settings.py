@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'users',
     'wishes',
     'core',
-    'reviews'
+    'reviews',
 ]
 
 MIDDLEWARE = [

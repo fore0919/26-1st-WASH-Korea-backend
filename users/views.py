@@ -51,7 +51,7 @@ class SignupView(View):
 class LoginView(View):
     def post(self, request):        
         try : 
-            data = json.loads(request.body)
+            data      = json.loads(request.body)
             user_name = data['user_name']
             password  = data['password']
             user      = User.objects.get(user_name=user_name)
@@ -59,7 +59,7 @@ class LoginView(View):
             if not bcrypt.checkpw(password.encode("utf-8"), user.password.encode('utf-8')):
                 return JsonResponse({'message':'INVALID_USER'}, status=401)
 
-            access_token = jwt.encode({'id':user.id},settings.SECRET_KEY, algorithm = settings.ALGORITHM)
+            access_token = jwt.encode({'user_id':user.id},settings.SECRET_KEY, algorithm = settings.ALGORITHM)
 
             return JsonResponse({'message':'SUCCESS', 'ACCESS_TOKEN': access_token}, status=200)
 
