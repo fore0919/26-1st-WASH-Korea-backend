@@ -12,25 +12,23 @@ from core.utils   import login_decorator
 class CartListView(View):
     @login_decorator
     def get(self, request):
-        user = request.GET['user']
-
         result = [{
             "cart_id"         : cart.id,
             "user_id"         : cart.user.id,
             "product_id"      : cart.product.id,
             "product_name"    : cart.product.name,
             "product_price"   : int(cart.product.price),
-            "product_image"   : cart.product.images.all()[0].url,
+            "product_image"   : cart.product.images.first().url,
             "sub_category_id" : cart.product.sub_category_id,
             "quantity"        : cart.quantity
-        } for cart in Cart.objects.filter(user_id =user)]
+        } for cart in Cart.objects.filter(user = request.user)]
 
         return JsonResponse({'results' : result}, status = 200)
 
     @login_decorator
     def post(self, request):
         try:
-            data = json.loads(request.body)
+            data       = json.loads(request.body)
             product_id = data['product_id']
             quantity   = data['quantity']
 
@@ -58,10 +56,10 @@ class CartView(View):
             data = json.loads(request.body)
             user = request.user
 
-            if not Cart.objects.filter(id=cart_id, user_id=user).exists():
+            if not Cart.objects.filter(id = cart_id, user_id = user).exists():
                 return JsonResponse({'message' : 'DOES_NOT_EXISTS'}, status=404)
 
-            cart = Cart.objects.get(id=cart_id, user_id=user.id)
+            cart = Cart.objects.get(id = cart_id, user_id = user.id)
 
             cart.product_id = data['product_id']
             cart.quantity   = data['quantity']
@@ -77,12 +75,12 @@ class CartView(View):
 
     @login_decorator
     def delete(self, request, cart_id):
-        user   = request.user
-        review = Cart.objects.get(id=cart_id, user_id=user)
+        user = request.user
+        cart = Cart.objects.get(id = cart_id, user = user)
 
-        if not Cart.objects.filter(id=cart_id, user_id=user).exists():
+        if not Cart.objects.filter(id = cart_id, user = user).exists():
             return JsonResponse({'message' : 'DOES_NOT_EXISTS'}, status=404)
 
-        review.delete()
+        cart.delete()
 
         return JsonResponse({'message' : 'SUCCESS'}, status = 204)
