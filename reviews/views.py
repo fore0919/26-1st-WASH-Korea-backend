@@ -69,10 +69,10 @@ class ReviewListView(View):
     def post(self, request): 
         try:
             data    = json.loads(request.body)
-            product_id = data['product_id'],
-            content    = data['content'], 
-            image      = data['image'],
-            rating     = data['rating'],
+            product_id = data['product_id']
+            content    = data['content']
+            image      = data['image']
+            rating     = data['rating']
 
             if not Product.objects.filter(id = product_id).exists():
                 return JsonResponse({'message' : 'DOES_NOT_EXISTS'}, status=404) 
