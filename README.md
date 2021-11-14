@@ -32,7 +32,7 @@
 > - Common : Git, Github, Slack, Trello, dbdiagram, postman
 
 ### Modeling
-[스크린샷, 2021-11-14 22-00-41](https://user-images.githubusercontent.com/82267811/141682135-23b35bab-7ee0-4d0f-b6df-43c68fd61bc7.png)
+![](https://images.velog.io/images/gyuls/post/294fcef4-a36b-4b16-b465-5979ace9d49f/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7,%202021-11-14%2022-00-41.png)
 
 ### 구현 기능
 
