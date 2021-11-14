@@ -23,13 +23,17 @@
 
 <br>
 
-## 적용 기술 및 구현 기능
+## 적용 
 
 ### 적용 기술
 
 > - Front-End : JavaScript, React.js, sass, react-modal
 > - Back-End : Django, Python, MySQL, jwt, bcrypt, AWS(EC2, RDS)
 > - Common : Git, Github, Slack, Trello, dbdiagram, postman
+
+<br>
+
+## 구현 기능
 
 ### Modeling
 ![](https://images.velog.io/images/gyuls/post/294fcef4-a36b-4b16-b465-5979ace9d49f/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7,%202021-11-14%2022-00-41.png)
@@ -46,6 +50,8 @@
 
 > 리뷰
 - 리뷰 CRUD API
+
+<br>
 
 #### 허규빈
 > 카테고리 & 제품 리스트 페이지
