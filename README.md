@@ -1,7 +1,7 @@
 ## Wash Korea Project
 
 [데모 영상](https://drive.google.com/file/d/1BbsvlZo2QaIZrlAps9iEAxLlXMc7TCYO/view?usp=sharing)
-[웹 사이트](링크 추가 예정)
+[웹 사이트](http://13.58.93.116:8000)
 
 ### [팀명] : Wash Korea(워시 코리아)
 
